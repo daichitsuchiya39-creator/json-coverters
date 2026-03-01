@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,10 +10,10 @@
     <div class="app-shell">
       <header class="hero">
         <p class="eyebrow">WORD TO JSON</p>
-        <h1>Word ファイルをブラウザで JSON に変換</h1>
+        <h1>Convert Word Files to JSON in Your Browser</h1>
         <p class="hero-copy">
-          <code>.docx</code> を読み込んで、見出し・段落・リスト・表を JSON として抽出します。
-          変換結果はその場で確認でき、ファイルとしてダウンロードできます。
+          Load a <code>.docx</code> file and extract headings, paragraphs, lists, and tables as JSON.
+          Preview the result instantly and download it as a file.
         </p>
       </header>
 
@@ -21,26 +21,26 @@
         <section class="panel controls">
           <label class="dropzone" for="file-input" id="dropzone">
             <input id="file-input" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
-            <span class="dropzone-title"><code>.docx</code> を選択</span>
-            <span class="dropzone-subtitle">クリックまたはドラッグ&ドロップ</span>
+            <span class="dropzone-title">Select a <code>.docx</code> file</span>
+            <span class="dropzone-subtitle">Click or drag &amp; drop</span>
           </label>
 
           <div class="actions">
-            <button id="convert-button" type="button">変換する</button>
-            <button id="download-button" type="button" disabled>JSON を保存</button>
+            <button id="convert-button" type="button">Convert</button>
+            <button id="download-button" type="button" disabled>Save JSON</button>
           </div>
 
           <dl class="meta" id="meta">
             <div>
-              <dt>状態</dt>
-              <dd id="status">ファイルを選択してください</dd>
+              <dt>Status</dt>
+              <dd id="status">Select a file</dd>
             </div>
             <div>
-              <dt>選択中</dt>
-              <dd id="selected-file">未選択</dd>
+              <dt>Selected</dt>
+              <dd id="selected-file">None</dd>
             </div>
             <div>
-              <dt>ブロック数</dt>
+              <dt>Block count</dt>
               <dd id="block-count">0</dd>
             </div>
           </dl>
@@ -48,8 +48,8 @@
 
         <section class="panel output">
           <div class="output-header">
-            <h2>JSON 出力</h2>
-            <p>変換結果は以下に表示されます。</p>
+            <h2>JSON Output</h2>
+            <p>Conversion result will be shown below.</p>
           </div>
           <pre id="json-output">{}</pre>
         </section>

@@ -1,81 +1,81 @@
 # doc-to-json — Word to JSON
 
-`.docx` ファイルをブラウザ上で JSON に変換するシングルページアプリです。
-ファイルはサーバーに送信されず、すべての処理がブラウザ内で完結します。
+A single-page browser app that converts `.docx` files to JSON.
+No files are uploaded to any server — all processing happens in the browser.
 
-## 機能
+## Features
 
-- `.docx` ファイルをクリックまたはドラッグ&ドロップで選択
-- 見出し・段落・リスト・表を構造化 JSON として抽出
-- 変換結果をブラウザ上でプレビュー
-- JSON ファイルとしてダウンロード
+- Select a `.docx` file by clicking or drag & drop
+- Extracts headings, paragraphs, lists, and tables as structured JSON
+- Preview the conversion result directly in the browser
+- Download the output as a JSON file
 
-## 対応要素
+## Supported Elements
 
-| Word 要素 | JSON の `type` |
+| Word element | JSON `type` |
 |---|---|
-| 見出し (H1〜H6) | `"heading"` |
-| 段落 | `"paragraph"` |
-| 番号なしリスト項目 | `"list-item"` (`ordered: false`) |
-| 番号付きリスト項目 | `"list-item"` (`ordered: true`) |
-| 表 | `"table"` |
+| Headings (H1–H6) | `"heading"` |
+| Paragraphs | `"paragraph"` |
+| Unordered list items | `"list-item"` (`ordered: false`) |
+| Ordered list items | `"list-item"` (`ordered: true`) |
+| Tables | `"table"` |
 
-段落内のインラインスタイル（太字・斜体・下線）は `runs` 配列に記録されます。
-ネストしたリストは `level` フィールドで階層を表現します。
+Inline styles within paragraphs (bold, italic, underline) are recorded in the `runs` array.
+Nested lists are represented by the `level` field.
 
-## 出力 JSON の構造
+## Output JSON Structure
 
 ```jsonc
 {
   "fileName": "example.docx",
   "convertedAt": "2025-01-01T00:00:00.000Z",
-  "messages": [],          // mammoth が返す警告メッセージ
+  "messages": [],          // warnings returned by mammoth
   "content": [
     {
       "type": "heading",
       "level": 1,
-      "text": "タイトル"
+      "text": "Title"
     },
     {
       "type": "paragraph",
-      "text": "本文テキスト",
+      "text": "Body text",
       "runs": [
-        { "text": "通常" },
-        { "text": "太字", "bold": true }
+        { "text": "Normal" },
+        { "text": "Bold text", "bold": true }
       ]
     },
     {
       "type": "list-item",
       "ordered": false,
       "level": 1,
-      "text": "リスト項目"
+      "text": "List item"
     },
     {
       "type": "table",
       "rows": [
-        ["ヘッダー1", "ヘッダー2"],
-        ["セル1",    "セル2"]
+        ["Header 1", "Header 2"],
+        ["Cell 1",   "Cell 2"]
       ]
     }
   ]
 }
 ```
 
-## 技術スタック
+## Tech Stack
 
-- **ビルドツール**: [Vite](https://vite.dev/) v7
-- **言語**: Vanilla JavaScript (ESM)
-- **Word 解析**: [mammoth.js](https://github.com/mwilliamson/mammoth.js) v1
+- **Build tool**: [Vite](https://vite.dev/) v7
+- **Language**: Vanilla JavaScript (ESM)
+- **Word parsing**: [mammoth.js](https://github.com/mwilliamson/mammoth.js) v1
 
-## セットアップ
+## Setup
 
 ```bash
 npm install
-npm run dev      # 開発サーバー起動
-npm run build    # dist/ にビルド
-npm run preview  # ビルド済みをプレビュー
+npm run dev      # Start dev server
+npm run build    # Build to dist/
+npm run preview  # Preview production build
 ```
 
-## 連携
+## Integration
 
-このツールが出力する JSON は **[json-sheet-converter](../json-sheet-converter/)** でそのまま Excel に変換できます。
+The JSON output from this tool can be loaded directly into **[json-sheet-converter](../json-sheet-converter/)** to convert it to Excel.

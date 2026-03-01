@@ -1,36 +1,35 @@
 # JSON Converters
 
-Word ドキュメントから JSON 変換、JSON から Excel 変換を行うブラウザアプリのモノレポです。
-サーバーへのアップロードは一切なく、すべての処理をブラウザ内で完結します。
+A monorepo of browser-based tools for converting Word documents to JSON and JSON to Excel.
+All processing happens entirely in the browser — no files are uploaded to any server.
 
-## ツール一覧
+## Tools
 
-| ディレクトリ | ツール名 | 機能 |
+| Directory | Tool | Description |
 |---|---|---|
-| [`doc-to-json/`](./doc-to-json/) | Word to JSON | `.docx` ファイルを JSON に変換 |
-| [`json-sheet-converter/`](./json-sheet-converter/) | JSON-Sheet Converter | JSON ファイルを Excel (.xlsx) に変換 |
+| [`doc-to-json/`](./doc-to-json/) | Word to JSON | Convert `.docx` files to JSON |
+| [`json-sheet-converter/`](./json-sheet-converter/) | JSON-Sheet Converter | Convert JSON files to Excel (.xlsx) |
 
-## 連携ワークフロー
+## Combined Workflow
 
-2 つのツールはそのまま連携して使えます。
+The two tools are designed to work together end-to-end.
 
 ```
 Word (.docx)  →  [doc-to-json]  →  JSON  →  [json-sheet-converter]  →  Excel (.xlsx)
 ```
 
-`doc-to-json` が出力する JSON を `json-sheet-converter` に読み込むと、
-`content_blocks` シートと `tables` シートが自動で生成されます。
+When you load the JSON output from `doc-to-json` into `json-sheet-converter`, it automatically generates dedicated `content_blocks` and `tables` sheets.
 
-## 技術スタック
+## Tech Stack
 
-- **ビルドツール**: [Vite](https://vite.dev/) v7
-- **言語**: Vanilla JavaScript (ESM)
-- **Word 解析**: [mammoth.js](https://github.com/mwilliamson/mammoth.js) (`doc-to-json`)
-- **Excel 生成**: [SheetJS (xlsx)](https://sheetjs.com/) (`json-sheet-converter`)
+- **Build tool**: [Vite](https://vite.dev/) v7
+- **Language**: Vanilla JavaScript (ESM)
+- **Word parsing**: [mammoth.js](https://github.com/mwilliamson/mammoth.js) (`doc-to-json`)
+- **Excel generation**: [SheetJS (xlsx)](https://sheetjs.com/) (`json-sheet-converter`)
 
-## 開発環境のセットアップ
+## Development Setup
 
-各ディレクトリに移動して依存パッケージをインストールし、開発サーバーを起動してください。
+Navigate into each directory, install dependencies, and start the dev server.
 
 ```bash
 # doc-to-json
@@ -44,9 +43,9 @@ npm install
 npm run dev
 ```
 
-## ビルド
+## Build
 
 ```bash
-npm run build   # dist/ に成果物を出力
-npm run preview # ビルド済み成果物をローカルでプレビュー
+npm run build    # Output production files to dist/
+npm run preview  # Preview the production build locally
 ```

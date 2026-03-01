@@ -19,7 +19,7 @@ const setStatus = (message) => {
 
 const setSelectedFile = (file) => {
   selectedFile = file;
-  selectedFileElement.textContent = file ? file.name : "未選択";
+  selectedFileElement.textContent = file ? file.name : "None";
 };
 
 const updateOutput = (payload) => {
@@ -171,18 +171,18 @@ const htmlToJson = (html, fileName, messages) => {
 
 const ensureDocxFile = (file) => {
   if (!file) {
-    throw new Error("ファイルが選択されていません。");
+    throw new Error("No file selected.");
   }
 
   if (!file.name.toLowerCase().endsWith(".docx")) {
-    throw new Error(".docx ファイルを選択してください。");
+    throw new Error("Please select a .docx file.");
   }
 };
 
 const convertFile = async () => {
   try {
     ensureDocxFile(selectedFile);
-    setStatus("変換中です...");
+    setStatus("Converting...");
     resetOutput();
 
     const arrayBuffer = await selectedFile.arrayBuffer();
@@ -190,10 +190,10 @@ const convertFile = async () => {
     const payload = htmlToJson(result.value, selectedFile.name, result.messages);
 
     updateOutput(payload);
-    setStatus("変換が完了しました。");
+    setStatus("Conversion complete.");
   } catch (error) {
     resetOutput();
-    setStatus(error instanceof Error ? error.message : "変換に失敗しました。");
+    setStatus(error instanceof Error ? error.message : "Conversion failed.");
   }
 };
 
@@ -215,7 +215,7 @@ const downloadJson = () => {
 
 const handleFileSelection = (file) => {
   setSelectedFile(file);
-  setStatus(file ? "変換の準備ができました。" : "ファイルを選択してください");
+  setStatus(file ? "Ready to convert." : "Select a file");
   resetOutput();
 };
 

@@ -1,5 +1,5 @@
 :root {
-  font-family: "Avenir Next", "Hiragino Sans", sans-serif;
+  font-family: "Avenir Next", system-ui, sans-serif;
   color: #1c2431;
   background:
     radial-gradient(circle at top, rgba(255, 233, 176, 0.9), transparent 28%),

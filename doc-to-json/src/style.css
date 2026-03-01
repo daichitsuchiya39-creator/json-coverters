@@ -1,5 +1,5 @@
 :root {
-  font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+  font-family: system-ui, sans-serif;
   color: #172033;
   background:
     radial-gradient(circle at top left, rgba(255, 206, 166, 0.9), transparent 30%),

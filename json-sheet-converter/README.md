@@ -1,77 +1,77 @@
 # json-sheet-converter — JSON to Excel
 
-JSON ファイルをブラウザ上で Excel (.xlsx) に変換するシングルページアプリです。
-ファイルはサーバーに送信されず、すべての処理がブラウザ内で完結します。
+A single-page browser app that converts JSON files to Excel (.xlsx).
+No files are uploaded to any server — all processing happens in the browser.
 
-## 機能
+## Features
 
-- JSON ファイルをクリックまたはドラッグ&ドロップで選択
-- 変換前にシート構成をプレビュー
-- Excel ファイル名を自由に指定してダウンロード
+- Select a JSON file by clicking or drag & drop
+- Preview the sheet layout before downloading
+- Specify a custom Excel file name
+- Download the output as an `.xlsx` file
 
-## JSON 構造とシートの対応
+## JSON Structure and Sheet Mapping
 
-### 配列 JSON
+### Array JSON
 
 ```json
 [{ "id": 1, "name": "Alice" }, { "id": 2, "name": "Bob" }]
 ```
 
-→ `data` という 1 枚のシートに変換されます。
+→ Converted into a single sheet named `data`.
 
-### オブジェクト JSON
+### Object JSON
 
 ```json
 {
-  "title": "レポート",
+  "title": "Report",
   "users": [{ "id": 1, "name": "Alice" }],
   "settings": { "theme": "dark" }
 }
 ```
 
-| シート名 | 内容 |
+| Sheet name | Content |
 |---|---|
-| `summary` | スカラー値 (`title` など) |
-| `users` | 配列のキー → 行展開 |
-| `settings` | オブジェクトのキー → 1 行でフラット化 |
+| `summary` | Scalar values (e.g. `title`) |
+| `users` | Array key → rows |
+| `settings` | Object key → single flattened row |
 
-### ネストしたオブジェクト・配列
+### Nested Objects and Arrays
 
-ドット記法でキーをフラット化します。
+Keys are flattened using dot notation.
 
 ```json
 { "user": { "address": { "city": "Tokyo" } } }
-// → 列名: "user.address.city"
+// → column name: "user.address.city"
 ```
 
-### doc-to-json 出力の特別対応
+### Special Support for doc-to-json Output
 
-`doc-to-json` が出力する `{ content: [...] }` 形式を読み込むと、
-以下のシートが自動で追加されます。
+When loading a `{ content: [...] }` JSON produced by `doc-to-json`, the following sheets are automatically added:
 
-| シート名 | 内容 |
+| Sheet name | Content |
 |---|---|
-| `content_blocks` | 各ブロックの type / level / text など |
-| `tables` | ドキュメント内の表データ（存在する場合） |
+| `content_blocks` | type / level / text of each block |
+| `tables` | Table data from the document (if any) |
 
-## 技術スタック
+## Tech Stack
 
-- **ビルドツール**: [Vite](https://vite.dev/) v7
-- **言語**: Vanilla JavaScript (ESM)
-- **Excel 生成**: [SheetJS (xlsx)](https://sheetjs.com/) v0.18
+- **Build tool**: [Vite](https://vite.dev/) v7
+- **Language**: Vanilla JavaScript (ESM)
+- **Excel generation**: [SheetJS (xlsx)](https://sheetjs.com/) v0.18
 
-## セットアップ
+## Setup
 
 ```bash
 npm install
-npm run dev      # 開発サーバー起動
-npm run build    # dist/ にビルド
-npm run preview  # ビルド済みをプレビュー
+npm run dev      # Start dev server
+npm run build    # Build to dist/
+npm run preview  # Preview production build
 ```
 
-## 連携
+## Integration
 
-**[doc-to-json](../doc-to-json/)** が出力した JSON をそのまま入力として使えます。
+This tool accepts the JSON output from **[doc-to-json](../doc-to-json/)** directly.
 
 ```
 Word (.docx)  →  doc-to-json  →  JSON  →  json-sheet-converter  →  Excel (.xlsx)

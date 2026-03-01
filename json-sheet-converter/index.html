@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,10 +10,10 @@
     <div class="page">
       <header class="hero">
         <p class="eyebrow">JSON-SHEET CONVERTER</p>
-        <h1>JSON を Excel に変換</h1>
+        <h1>Convert JSON to Excel</h1>
         <p class="lead">
-          配列・オブジェクト形式の JSON を読み込み、フラットな表に変換して
-          <code>.xlsx</code> として保存します。Word-to-JSON の出力もそのまま扱えます。
+          Load an array or object JSON file, flatten it into a table, and save it as
+          <code>.xlsx</code>. Also supports Word-to-JSON output directly.
         </p>
       </header>
 
@@ -21,31 +21,31 @@
         <section class="panel controls">
           <label class="dropzone" id="dropzone" for="file-input">
             <input id="file-input" type="file" accept=".json,application/json" />
-            <span class="drop-title">JSON ファイルを選択</span>
-            <span class="drop-subtitle">クリックまたはドラッグ&ドロップ</span>
+            <span class="drop-title">Select a JSON file</span>
+            <span class="drop-subtitle">Click or drag &amp; drop</span>
           </label>
 
           <div class="field">
-            <label for="workbook-name">Excel ファイル名</label>
+            <label for="workbook-name">Excel file name</label>
             <input id="workbook-name" type="text" value="converted-workbook" />
           </div>
 
           <div class="actions">
-            <button id="convert-button" type="button">プレビュー作成</button>
-            <button id="download-button" type="button" disabled>Excel を保存</button>
+            <button id="convert-button" type="button">Preview</button>
+            <button id="download-button" type="button" disabled>Save Excel</button>
           </div>
 
           <dl class="meta">
             <div>
-              <dt>状態</dt>
-              <dd id="status">JSON ファイルを選択してください</dd>
+              <dt>Status</dt>
+              <dd id="status">Select a JSON file</dd>
             </div>
             <div>
-              <dt>選択中</dt>
-              <dd id="selected-file">未選択</dd>
+              <dt>Selected</dt>
+              <dd id="selected-file">None</dd>
             </div>
             <div>
-              <dt>シート数</dt>
+              <dt>Sheet count</dt>
               <dd id="sheet-count">0</dd>
             </div>
           </dl>
@@ -53,8 +53,8 @@
 
         <section class="panel preview">
           <div class="preview-header">
-            <h2>変換プレビュー</h2>
-            <p>作成予定のシートと列構成を表示します。</p>
+            <h2>Conversion Preview</h2>
+            <p>Shows the sheets and columns that will be generated.</p>
           </div>
           <div id="preview-root" class="preview-root"></div>
         </section>

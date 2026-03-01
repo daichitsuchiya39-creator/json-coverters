@@ -20,7 +20,7 @@ const setStatus = (message) => {
 
 const setSelectedFile = (file) => {
   selectedFile = file;
-  selectedFileElement.textContent = file ? file.name : "未選択";
+  selectedFileElement.textContent = file ? file.name : "None";
 };
 
 const resetPreview = () => {
@@ -222,7 +222,7 @@ const renderPreview = (sheets) => {
   previewRoot.innerHTML = "";
 
   if (sheets.length === 0) {
-    previewRoot.innerHTML = "<p class=\"empty\">出力対象のシートがありません。</p>";
+    previewRoot.innerHTML = "<p class=\"empty\">No sheets to output.</p>";
     return;
   }
 
@@ -288,10 +288,10 @@ const createWorkbook = (sheets) => {
 const convertSelectedFile = async () => {
   try {
     if (!selectedFile) {
-      throw new Error("JSON ファイルが選択されていません。");
+      throw new Error("No JSON file selected.");
     }
 
-    setStatus("JSON を解析中です...");
+    setStatus("Parsing JSON...");
     resetPreview();
 
     const json = await parseJsonFile(selectedFile);
@@ -301,10 +301,10 @@ const convertSelectedFile = async () => {
     sheetCountElement.textContent = String(sheets.length);
     renderPreview(sheets);
     downloadButton.disabled = false;
-    setStatus("Excel 出力の準備ができました。");
+    setStatus("Ready to export Excel.");
   } catch (error) {
     resetPreview();
-    setStatus(error instanceof Error ? error.message : "変換に失敗しました。");
+    setStatus(error instanceof Error ? error.message : "Conversion failed.");
   }
 };
 
@@ -322,7 +322,7 @@ const downloadWorkbook = () => {
 const handleFileSelection = (file) => {
   setSelectedFile(file);
   resetPreview();
-  setStatus(file ? "プレビューを作成してください。" : "JSON ファイルを選択してください");
+  setStatus(file ? "Click Preview to continue." : "Select a JSON file");
 };
 
 fileInput.addEventListener("change", (event) => {
