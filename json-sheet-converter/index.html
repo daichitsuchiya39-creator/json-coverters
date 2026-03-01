@@ -3,23 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Excel ↔ JSON Converter</title>
+    <title>Spreadsheet ↔ JSON Converter</title>
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>
     <div class="page">
       <header class="hero">
-        <p class="eyebrow">EXCEL ↔ JSON</p>
-        <h1>Convert Between Excel and JSON</h1>
+        <p class="eyebrow">SPREADSHEET ↔ JSON</p>
+        <h1>Convert Between Spreadsheets and JSON</h1>
         <p class="lead">
-          Turn any JSON file into an <code>.xlsx</code> workbook, or read an Excel file back as
+          Turn any JSON file into an <code>.xlsx</code> workbook, or read a spreadsheet back as
           clean JSON — all in your browser.
         </p>
       </header>
 
       <nav class="mode-tabs">
-        <button class="tab-btn active" type="button" data-mode="json-to-excel">JSON → Excel</button>
-        <button class="tab-btn" type="button" data-mode="excel-to-json">Excel → JSON</button>
+        <button class="tab-btn active" type="button" data-mode="json-to-excel">JSON → Spreadsheet</button>
+        <button class="tab-btn" type="button" data-mode="excel-to-json">Spreadsheet → JSON</button>
       </nav>
 
       <main class="layout">
@@ -33,13 +33,13 @@
             </label>
 
             <div class="field">
-              <label for="workbook-name">Excel file name</label>
+              <label for="workbook-name">Spreadsheet file name</label>
               <input id="workbook-name" type="text" value="converted-workbook" />
             </div>
 
             <div class="actions">
               <button id="convert-button" type="button">Preview</button>
-              <button id="download-button" type="button" disabled>Save Excel</button>
+              <button id="download-button" type="button" disabled>Save .xlsx</button>
             </div>
 
             <dl class="meta">
@@ -62,7 +62,7 @@
           <div id="section-excel-to-json" class="mode-section" hidden>
             <label class="dropzone" id="xl-dropzone" for="xl-file-input">
               <input id="xl-file-input" type="file" accept=".xlsx,.xls" />
-              <span class="drop-title">Select an Excel file</span>
+              <span class="drop-title">Select a spreadsheet</span>
               <span class="drop-subtitle">Click or drag &amp; drop .xlsx / .xls</span>
             </label>
 
@@ -79,7 +79,7 @@
             <dl class="meta">
               <div>
                 <dt>Status</dt>
-                <dd id="xl-status">Select an Excel file</dd>
+                <dd id="xl-status">Select a spreadsheet</dd>
               </div>
               <div>
                 <dt>Selected</dt>
@@ -107,7 +107,7 @@
           <div id="preview-excel-to-json" class="preview-mode" hidden>
             <div class="preview-header">
               <h2>Sheet Preview</h2>
-              <p>Shows data read from the Excel file.</p>
+              <p>Shows data read from the spreadsheet.</p>
             </div>
             <div id="xl-preview-root" class="preview-root"></div>
           </div>

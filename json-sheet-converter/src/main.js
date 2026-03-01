@@ -295,7 +295,7 @@ const convertSelectedFile = async () => {
     sheetCountEl.textContent = String(sheets.length);
     renderSheets(sheets, previewRoot);
     downloadButton.disabled = false;
-    setStatus("Ready to export Excel.");
+    setStatus("Ready to export spreadsheet.");
   } catch (error) {
     resetPreview();
     setStatus(error instanceof Error ? error.message : "Conversion failed.");
@@ -392,9 +392,9 @@ const buildSheetsFromExcel = (arrayBuffer) => {
 
 const previewExcelFile = async () => {
   try {
-    if (!xlSelectedFile) throw new Error("No Excel file selected.");
+    if (!xlSelectedFile) throw new Error("No spreadsheet selected.");
 
-    setXlStatus("Reading Excel...");
+    setXlStatus("Reading spreadsheet...");
     resetXlPreview();
 
     const arrayBuffer = await xlSelectedFile.arrayBuffer();
@@ -438,7 +438,7 @@ const handleXlFileSelection = (file) => {
     jsonNameInput.value = file.name.replace(/\.(xlsx?|xls)$/i, "");
   }
   resetXlPreview();
-  setXlStatus(file ? "Click Preview to continue." : "Select an Excel file");
+  setXlStatus(file ? "Click Preview to continue." : "Select a spreadsheet");
 };
 
 xlFileInput.addEventListener("change", (event) => {

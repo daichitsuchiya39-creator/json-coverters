@@ -214,7 +214,7 @@ const downloadJson = () => {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = `${selectedFile?.name.replace(/\.docx$/i, "") ?? "word-document"}.json`;
+  anchor.download = `${selectedFile?.name.replace(/\.docx$/i, "") ?? "document"}.json`;
   anchor.click();
   URL.revokeObjectURL(url);
 };
