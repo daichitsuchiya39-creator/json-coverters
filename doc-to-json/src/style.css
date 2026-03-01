@@ -57,6 +57,39 @@ code {
   font-size: 1.05rem;
 }
 
+.mode-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  padding: 10px 28px;
+  border: 2px solid rgba(23, 32, 51, 0.15);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.65);
+  color: #172033;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.tab-btn.active {
+  background: #172033;
+  color: #fff;
+  border-color: #172033;
+}
+
+.tab-btn:hover:not(.active) {
+  border-color: #172033;
+  transform: translateY(-1px);
+}
+
 .workspace {
   display: grid;
   grid-template-columns: 360px minmax(0, 1fr);
@@ -64,6 +97,7 @@ code {
 }
 
 .panel {
+  -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
   background: rgba(255, 255, 255, 0.68);
   border: 1px solid rgba(23, 32, 51, 0.08);
@@ -141,6 +175,11 @@ code {
   color: #fff;
 }
 
+#generate-button {
+  background: #1a6b52;
+  color: #fff;
+}
+
 .actions button:hover {
   transform: translateY(-1px);
 }
@@ -209,7 +248,7 @@ code {
   }
 
   .output {
-    min-height: auto;
+    min-height: 0;
   }
 
   #json-output {

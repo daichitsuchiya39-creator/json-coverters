@@ -3,55 +3,103 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Word to JSON</title>
+    <title>Word ↔ JSON Converter</title>
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>
     <div class="app-shell">
       <header class="hero">
-        <p class="eyebrow">WORD TO JSON</p>
-        <h1>Convert Word Files to JSON in Your Browser</h1>
+        <p class="eyebrow">WORD ↔ JSON</p>
+        <h1>Convert Between Word Files and JSON</h1>
         <p class="hero-copy">
-          Load a <code>.docx</code> file and extract headings, paragraphs, lists, and tables as JSON.
-          Preview the result instantly and download it as a file.
+          Convert <code>.docx</code> files to structured JSON, or turn JSON back into a
+          <code>.docx</code> document — all in your browser.
         </p>
       </header>
 
+      <nav class="mode-tabs">
+        <button class="tab-btn active" type="button" data-mode="word-to-json">Word → JSON</button>
+        <button class="tab-btn" type="button" data-mode="json-to-word">JSON → Word</button>
+      </nav>
+
       <main class="workspace">
         <section class="panel controls">
-          <label class="dropzone" for="file-input" id="dropzone">
-            <input id="file-input" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
-            <span class="dropzone-title">Select a <code>.docx</code> file</span>
-            <span class="dropzone-subtitle">Click or drag &amp; drop</span>
-          </label>
+          <!-- Mode: Word → JSON -->
+          <div id="section-word-to-json" class="mode-section">
+            <label class="dropzone" for="file-input" id="dropzone">
+              <input id="file-input" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+              <span class="dropzone-title">Select a <code>.docx</code> file</span>
+              <span class="dropzone-subtitle">Click or drag &amp; drop</span>
+            </label>
 
-          <div class="actions">
-            <button id="convert-button" type="button">Convert</button>
-            <button id="download-button" type="button" disabled>Save JSON</button>
+            <div class="actions">
+              <button id="convert-button" type="button">Convert</button>
+              <button id="download-button" type="button" disabled>Save JSON</button>
+            </div>
+
+            <dl class="meta">
+              <div>
+                <dt>Status</dt>
+                <dd id="status">Select a file</dd>
+              </div>
+              <div>
+                <dt>Selected</dt>
+                <dd id="selected-file">None</dd>
+              </div>
+              <div>
+                <dt>Block count</dt>
+                <dd id="block-count">0</dd>
+              </div>
+            </dl>
           </div>
 
-          <dl class="meta" id="meta">
-            <div>
-              <dt>Status</dt>
-              <dd id="status">Select a file</dd>
+          <!-- Mode: JSON → Word -->
+          <div id="section-json-to-word" class="mode-section" hidden>
+            <label class="dropzone" for="json-file-input" id="json-dropzone">
+              <input id="json-file-input" type="file" accept=".json,application/json" />
+              <span class="dropzone-title">Select a <code>.json</code> file</span>
+              <span class="dropzone-subtitle">Click or drag &amp; drop</span>
+            </label>
+
+            <div class="actions">
+              <button id="generate-button" type="button" disabled>Generate .docx</button>
             </div>
-            <div>
-              <dt>Selected</dt>
-              <dd id="selected-file">None</dd>
-            </div>
-            <div>
-              <dt>Block count</dt>
-              <dd id="block-count">0</dd>
-            </div>
-          </dl>
+
+            <dl class="meta">
+              <div>
+                <dt>Status</dt>
+                <dd id="json-status">Select a file</dd>
+              </div>
+              <div>
+                <dt>Selected</dt>
+                <dd id="json-selected-file">None</dd>
+              </div>
+              <div>
+                <dt>Block count</dt>
+                <dd id="json-block-count">0</dd>
+              </div>
+            </dl>
+          </div>
         </section>
 
         <section class="panel output">
-          <div class="output-header">
-            <h2>JSON Output</h2>
-            <p>Conversion result will be shown below.</p>
+          <!-- Output: Word → JSON -->
+          <div id="output-word-to-json" class="output-mode">
+            <div class="output-header">
+              <h2>JSON Output</h2>
+              <p>Conversion result will be shown below.</p>
+            </div>
+            <pre id="json-output">{}</pre>
           </div>
-          <pre id="json-output">{}</pre>
+
+          <!-- Output: JSON → Word -->
+          <div id="output-json-to-word" class="output-mode" hidden>
+            <div class="output-header">
+              <h2>JSON Preview</h2>
+              <p>Loaded JSON will be shown below.</p>
+            </div>
+            <pre id="json-input-preview">{}</pre>
+          </div>
         </section>
       </main>
     </div>

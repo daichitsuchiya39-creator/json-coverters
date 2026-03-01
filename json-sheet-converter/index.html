@@ -3,60 +3,114 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JSON-Sheet Converter</title>
+    <title>Excel ↔ JSON Converter</title>
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>
     <div class="page">
       <header class="hero">
-        <p class="eyebrow">JSON-SHEET CONVERTER</p>
-        <h1>Convert JSON to Excel</h1>
+        <p class="eyebrow">EXCEL ↔ JSON</p>
+        <h1>Convert Between Excel and JSON</h1>
         <p class="lead">
-          Load an array or object JSON file, flatten it into a table, and save it as
-          <code>.xlsx</code>. Also supports Word-to-JSON output directly.
+          Turn any JSON file into an <code>.xlsx</code> workbook, or read an Excel file back as
+          clean JSON — all in your browser.
         </p>
       </header>
 
+      <nav class="mode-tabs">
+        <button class="tab-btn active" type="button" data-mode="json-to-excel">JSON → Excel</button>
+        <button class="tab-btn" type="button" data-mode="excel-to-json">Excel → JSON</button>
+      </nav>
+
       <main class="layout">
         <section class="panel controls">
-          <label class="dropzone" id="dropzone" for="file-input">
-            <input id="file-input" type="file" accept=".json,application/json" />
-            <span class="drop-title">Select a JSON file</span>
-            <span class="drop-subtitle">Click or drag &amp; drop</span>
-          </label>
+          <!-- Mode: JSON → Excel -->
+          <div id="section-json-to-excel" class="mode-section">
+            <label class="dropzone" id="dropzone" for="file-input">
+              <input id="file-input" type="file" accept=".json,application/json" />
+              <span class="drop-title">Select a JSON file</span>
+              <span class="drop-subtitle">Click or drag &amp; drop</span>
+            </label>
 
-          <div class="field">
-            <label for="workbook-name">Excel file name</label>
-            <input id="workbook-name" type="text" value="converted-workbook" />
+            <div class="field">
+              <label for="workbook-name">Excel file name</label>
+              <input id="workbook-name" type="text" value="converted-workbook" />
+            </div>
+
+            <div class="actions">
+              <button id="convert-button" type="button">Preview</button>
+              <button id="download-button" type="button" disabled>Save Excel</button>
+            </div>
+
+            <dl class="meta">
+              <div>
+                <dt>Status</dt>
+                <dd id="status">Select a JSON file</dd>
+              </div>
+              <div>
+                <dt>Selected</dt>
+                <dd id="selected-file">None</dd>
+              </div>
+              <div>
+                <dt>Sheet count</dt>
+                <dd id="sheet-count">0</dd>
+              </div>
+            </dl>
           </div>
 
-          <div class="actions">
-            <button id="convert-button" type="button">Preview</button>
-            <button id="download-button" type="button" disabled>Save Excel</button>
-          </div>
+          <!-- Mode: Excel → JSON -->
+          <div id="section-excel-to-json" class="mode-section" hidden>
+            <label class="dropzone" id="xl-dropzone" for="xl-file-input">
+              <input id="xl-file-input" type="file" accept=".xlsx,.xls" />
+              <span class="drop-title">Select an Excel file</span>
+              <span class="drop-subtitle">Click or drag &amp; drop .xlsx / .xls</span>
+            </label>
 
-          <dl class="meta">
-            <div>
-              <dt>Status</dt>
-              <dd id="status">Select a JSON file</dd>
+            <div class="field">
+              <label for="json-name">JSON file name</label>
+              <input id="json-name" type="text" value="converted-data" />
             </div>
-            <div>
-              <dt>Selected</dt>
-              <dd id="selected-file">None</dd>
+
+            <div class="actions">
+              <button id="xl-preview-button" type="button">Preview</button>
+              <button id="xl-download-button" type="button" disabled>Save JSON</button>
             </div>
-            <div>
-              <dt>Sheet count</dt>
-              <dd id="sheet-count">0</dd>
-            </div>
-          </dl>
+
+            <dl class="meta">
+              <div>
+                <dt>Status</dt>
+                <dd id="xl-status">Select an Excel file</dd>
+              </div>
+              <div>
+                <dt>Selected</dt>
+                <dd id="xl-selected-file">None</dd>
+              </div>
+              <div>
+                <dt>Sheet count</dt>
+                <dd id="xl-sheet-count">0</dd>
+              </div>
+            </dl>
+          </div>
         </section>
 
         <section class="panel preview">
-          <div class="preview-header">
-            <h2>Conversion Preview</h2>
-            <p>Shows the sheets and columns that will be generated.</p>
+          <!-- Preview: JSON → Excel -->
+          <div id="preview-json-to-excel" class="preview-mode">
+            <div class="preview-header">
+              <h2>Conversion Preview</h2>
+              <p>Shows the sheets and columns that will be generated.</p>
+            </div>
+            <div id="preview-root" class="preview-root"></div>
           </div>
-          <div id="preview-root" class="preview-root"></div>
+
+          <!-- Preview: Excel → JSON -->
+          <div id="preview-excel-to-json" class="preview-mode" hidden>
+            <div class="preview-header">
+              <h2>Sheet Preview</h2>
+              <p>Shows data read from the Excel file.</p>
+            </div>
+            <div id="xl-preview-root" class="preview-root"></div>
+          </div>
         </section>
       </main>
     </div>

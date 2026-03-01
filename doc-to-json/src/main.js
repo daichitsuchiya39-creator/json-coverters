@@ -1,38 +1,54 @@
 import "./style.css";
 import * as mammoth from "mammoth/mammoth.browser";
+import { AlignmentType, Document, HeadingLevel, Packer, Paragraph, Table, TableCell, TableRow, TextRun } from "docx";
 
+// ── Mode tabs ──────────────────────────────────────────────────────────────
+const tabButtons = document.querySelectorAll(".tab-btn");
+const sectionWordToJson = document.querySelector("#section-word-to-json");
+const sectionJsonToWord = document.querySelector("#section-json-to-word");
+const outputWordToJson = document.querySelector("#output-word-to-json");
+const outputJsonToWord = document.querySelector("#output-json-to-word");
+
+const switchMode = (mode) => {
+  tabButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.mode === mode));
+  sectionWordToJson.hidden = mode !== "word-to-json";
+  sectionJsonToWord.hidden = mode !== "json-to-word";
+  outputWordToJson.hidden = mode !== "word-to-json";
+  outputJsonToWord.hidden = mode !== "json-to-word";
+};
+
+tabButtons.forEach((btn) => {
+  btn.addEventListener("click", () => switchMode(btn.dataset.mode));
+});
+
+// ── Word → JSON ────────────────────────────────────────────────────────────
 const fileInput = document.querySelector("#file-input");
 const convertButton = document.querySelector("#convert-button");
 const downloadButton = document.querySelector("#download-button");
 const jsonOutput = document.querySelector("#json-output");
-const statusElement = document.querySelector("#status");
-const selectedFileElement = document.querySelector("#selected-file");
-const blockCountElement = document.querySelector("#block-count");
+const statusEl = document.querySelector("#status");
+const selectedFileEl = document.querySelector("#selected-file");
+const blockCountEl = document.querySelector("#block-count");
 const dropzone = document.querySelector("#dropzone");
 
 let selectedFile = null;
 let convertedJson = null;
 
 const setStatus = (message) => {
-  statusElement.textContent = message;
-};
-
-const setSelectedFile = (file) => {
-  selectedFile = file;
-  selectedFileElement.textContent = file ? file.name : "None";
+  statusEl.textContent = message;
 };
 
 const updateOutput = (payload) => {
   convertedJson = payload;
   jsonOutput.textContent = JSON.stringify(payload, null, 2);
-  blockCountElement.textContent = String(payload.content.length);
+  blockCountEl.textContent = String(payload.content.length);
   downloadButton.disabled = false;
 };
 
 const resetOutput = () => {
   convertedJson = null;
   jsonOutput.textContent = "{}";
-  blockCountElement.textContent = "0";
+  blockCountEl.textContent = "0";
   downloadButton.disabled = true;
 };
 
@@ -169,19 +185,11 @@ const htmlToJson = (html, fileName, messages) => {
   };
 };
 
-const ensureDocxFile = (file) => {
-  if (!file) {
-    throw new Error("No file selected.");
-  }
-
-  if (!file.name.toLowerCase().endsWith(".docx")) {
-    throw new Error("Please select a .docx file.");
-  }
-};
-
 const convertFile = async () => {
   try {
-    ensureDocxFile(selectedFile);
+    if (!selectedFile) throw new Error("No file selected.");
+    if (!selectedFile.name.toLowerCase().endsWith(".docx")) throw new Error("Please select a .docx file.");
+
     setStatus("Converting...");
     resetOutput();
 
@@ -198,9 +206,7 @@ const convertFile = async () => {
 };
 
 const downloadJson = () => {
-  if (!convertedJson) {
-    return;
-  }
+  if (!convertedJson) return;
 
   const blob = new Blob([JSON.stringify(convertedJson, null, 2)], {
     type: "application/json",
@@ -214,7 +220,8 @@ const downloadJson = () => {
 };
 
 const handleFileSelection = (file) => {
-  setSelectedFile(file);
+  selectedFile = file;
+  selectedFileEl.textContent = file ? file.name : "None";
   setStatus(file ? "Ready to convert." : "Select a file");
   resetOutput();
 };
@@ -245,4 +252,185 @@ dropzone.addEventListener("drop", (event) => {
   const [file] = event.dataTransfer?.files ?? [];
   fileInput.files = event.dataTransfer?.files ?? null;
   handleFileSelection(file ?? null);
+});
+
+// ── JSON → Word ────────────────────────────────────────────────────────────
+const jsonFileInput = document.querySelector("#json-file-input");
+const generateButton = document.querySelector("#generate-button");
+const jsonInputPreview = document.querySelector("#json-input-preview");
+const jsonStatusEl = document.querySelector("#json-status");
+const jsonSelectedFileEl = document.querySelector("#json-selected-file");
+const jsonBlockCountEl = document.querySelector("#json-block-count");
+const jsonDropzone = document.querySelector("#json-dropzone");
+
+let loadedJson = null;
+let jsonInputFileName = null;
+
+const HEADING_MAP = {
+  1: HeadingLevel.HEADING_1,
+  2: HeadingLevel.HEADING_2,
+  3: HeadingLevel.HEADING_3,
+  4: HeadingLevel.HEADING_4,
+  5: HeadingLevel.HEADING_5,
+  6: HeadingLevel.HEADING_6,
+};
+
+const blockToDocxElement = (block) => {
+  if (block.type === "heading") {
+    return new Paragraph({
+      heading: HEADING_MAP[block.level] ?? HeadingLevel.HEADING_1,
+      children: [new TextRun(block.text ?? "")],
+    });
+  }
+
+  if (block.type === "paragraph") {
+    const runs = block.runs?.length
+      ? block.runs.map(
+          (run) =>
+            new TextRun({
+              text: run.text,
+              bold: run.bold ?? false,
+              italics: run.italic ?? false,
+              underline: run.underline ? {} : undefined,
+            }),
+        )
+      : [new TextRun(block.text ?? "")];
+    return new Paragraph({ children: runs });
+  }
+
+  if (block.type === "list-item") {
+    const level = (block.level ?? 1) - 1;
+    if (block.ordered) {
+      return new Paragraph({
+        children: [new TextRun(block.text ?? "")],
+        numbering: { reference: "ordered-list", level },
+      });
+    }
+    return new Paragraph({
+      children: [new TextRun(block.text ?? "")],
+      bullet: { level },
+    });
+  }
+
+  if (block.type === "table") {
+    return new Table({
+      rows: (block.rows ?? []).map(
+        (row) =>
+          new TableRow({
+            children: row.map(
+              (cell) =>
+                new TableCell({
+                  children: [new Paragraph(String(cell))],
+                }),
+            ),
+          }),
+      ),
+    });
+  }
+
+  return new Paragraph({ children: [new TextRun(block.text ?? "")] });
+};
+
+const loadJsonData = async (file) => {
+  if (!file || !file.name.toLowerCase().endsWith(".json")) {
+    jsonStatusEl.textContent = "Please select a .json file.";
+    return;
+  }
+
+  try {
+    const text = await file.text();
+    const parsed = JSON.parse(text);
+
+    if (!Array.isArray(parsed.content)) {
+      throw new Error('Invalid format: "content" array not found.');
+    }
+
+    loadedJson = parsed;
+    jsonInputFileName = file.name;
+    jsonSelectedFileEl.textContent = file.name;
+    jsonBlockCountEl.textContent = String(parsed.content.length);
+    jsonStatusEl.textContent = "Ready to generate.";
+    jsonInputPreview.textContent = JSON.stringify(parsed, null, 2);
+    generateButton.disabled = false;
+  } catch (err) {
+    loadedJson = null;
+    generateButton.disabled = true;
+    jsonStatusEl.textContent = err instanceof Error ? err.message : "Failed to load JSON.";
+    jsonInputPreview.textContent = "{}";
+  }
+};
+
+const generateDocx = async () => {
+  if (!loadedJson) return;
+
+  jsonStatusEl.textContent = "Generating...";
+  generateButton.disabled = true;
+
+  try {
+    const children = loadedJson.content.map(blockToDocxElement);
+
+    const doc = new Document({
+      numbering: {
+        config: [
+          {
+            reference: "ordered-list",
+            levels: Array.from({ length: 9 }, (_, i) => ({
+              level: i,
+              format: "decimal",
+              text: `%${i + 1}.`,
+              alignment: AlignmentType.LEFT,
+              style: {
+                paragraph: {
+                  indent: { left: 720 * (i + 1), hanging: 260 },
+                },
+              },
+            })),
+          },
+        ],
+      },
+      sections: [{ children }],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = (jsonInputFileName?.replace(/\.json$/i, "") ?? "document") + ".docx";
+    anchor.click();
+    URL.revokeObjectURL(url);
+
+    jsonStatusEl.textContent = "Generated successfully.";
+  } catch (err) {
+    jsonStatusEl.textContent = err instanceof Error ? err.message : "Generation failed.";
+  } finally {
+    generateButton.disabled = false;
+  }
+};
+
+jsonFileInput.addEventListener("change", (event) => {
+  const [file] = event.target.files ?? [];
+  if (file) void loadJsonData(file);
+});
+
+generateButton.addEventListener("click", () => {
+  void generateDocx();
+});
+
+jsonDropzone.addEventListener("dragover", (event) => {
+  event.preventDefault();
+  jsonDropzone.classList.add("dragging");
+});
+
+jsonDropzone.addEventListener("dragleave", () => {
+  jsonDropzone.classList.remove("dragging");
+});
+
+jsonDropzone.addEventListener("drop", (event) => {
+  event.preventDefault();
+  jsonDropzone.classList.remove("dragging");
+  const [file] = event.dataTransfer?.files ?? [];
+  if (file) {
+    jsonFileInput.files = event.dataTransfer?.files ?? null;
+    void loadJsonData(file);
+  }
 });
